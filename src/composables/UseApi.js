@@ -10,6 +10,15 @@ export default function useApi (url) {
     }
   }
 
+  const getById = async (id) => {
+    try {
+      const response = await api.get(`${url}/${id}`)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   const post = async (form) => {
     try {
       const response = await api.post(url, form)
@@ -28,10 +37,10 @@ export default function useApi (url) {
     }
   }
 
-  const remove = async (form) => {
+  const remove = async (id) => {
     try {
-      const response = await api.delete(`${url}/${form.id}`)
-      return response.data
+      const { data } = await api.delete(`${url}/${id}`)
+      return data
     } catch (error) {
       throw new Error(error)
     }
@@ -41,6 +50,7 @@ export default function useApi (url) {
     list,
     post,
     update,
-    remove
+    remove,
+    getById
   }
 }
