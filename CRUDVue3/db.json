@@ -1,0 +1,16 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "Curso QUASAR",
+      "author": "Enzo",
+      "content": "curso de vue3"
+    },
+    {
+      "id": "2",
+      "title": "Curso QUASAR2",
+      "author": "Enzo",
+      "content": "curso de vue32"
+    }
+  ]
+}
