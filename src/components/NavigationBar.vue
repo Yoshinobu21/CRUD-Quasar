@@ -1,9 +1,5 @@
 <template>
-  <div class="row justify-end q-mr-xl">
-    <div>
-
-    </div>
-
+  <div class="row justify-center q-mr-xl">
     <div class="q-pa-md q-gutter-sm row">
       <q-btn no-caps class="button" style="margin: 2px;" @click="$emit('prev')">
         &lt; Mês Anterior
