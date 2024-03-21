@@ -38,6 +38,12 @@ const linksList = [
     caption: '',
     icon: 'home',
     route: { name: 'home' }
+  },
+  {
+    title: 'Calendar',
+    caption: '',
+    icon: 'calendar_month',
+    route: { name: 'calendar' }
   }
 ]
 
