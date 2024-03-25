@@ -44,6 +44,12 @@ const linksList = [
     caption: '',
     icon: 'calendar_month',
     route: { name: 'calendar' }
+  },
+  {
+    title: 'Calendar Events',
+    caption: '',
+    icon: 'calendar_month',
+    route: { name: 'calendarEvents' }
   }
 ]
 
