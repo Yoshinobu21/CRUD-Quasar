@@ -1,52 +1,20 @@
 {
   "posts": [
     {
-      "id": "1",
-      "title": "Curso QUASAR2awtawawt",
-      "author": "Enzo",
-      "content": "awdawdawdwad"
+      "title": "teste",
+      "details": "teste11",
+      "date": "2024-03-28",
+      "bgColor": "green",
+      "icon": "fa-solid fa-palette",
+      "id": 1
     },
     {
-      "id": "2",
-      "title": "Curso QUASAR2",
-      "author": "Enzo",
-      "content": "curso de vue32"
-    },
-    {
-      "id": "3",
-      "title": "Curso QUASAR2",
-      "author": "Enzo",
-      "content": "curso de vue32"
-    },
-    {
-      "id": "4",
-      "title": "Curso QUASAR2",
-      "author": "Enzo",
-      "content": "curso de vue32"
-    },
-    {
-      "title": "123",
-      "content": "awdawawd",
-      "author": "123",
-      "id": "pTIKPMe"
-    },
-    {
-      "title": "11111",
-      "content": "",
-      "author": "1111",
-      "id": "ZU0Upid"
-    },
-    {
-      "title": "testes",
-      "content": "",
-      "author": "tests",
-      "id": "4_kkzAm"
-    },
-    {
-      "title": "TESTEF",
-      "content": "TESTESFG",
-      "author": "TESTEF",
-      "id": "kSu7IM-"
+      "title": "teste2",
+      "details": "teste22",
+      "date": "2024-03-14",
+      "bgColor": "red",
+      "icon": "fa-solid fa-palette",
+      "id": 2
     }
   ]
 }

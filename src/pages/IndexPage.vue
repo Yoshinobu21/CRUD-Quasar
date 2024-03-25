@@ -2,9 +2,9 @@
   <q-page padding>
     <q-table title="Treats" :rows="posts" :columns="columns" row-key="name">
       <template v-slot:top>
-        <span class="text-h5">Artigos</span>
+        <span class="text-h5">Eventos</span>
         <q-space />
-        <q-btn color="primary" label="Add row" :to="{ name: 'formPost' }"></q-btn>
+        <q-btn color="primary" label="Add Event" :to="{ name: 'formPost' }"></q-btn>
       </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-sm">
@@ -31,7 +31,10 @@ export default defineComponent({
 
       { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' },
       { name: 'title', label: 'Title', field: 'title', sortable: true, align: 'left' },
-      { name: 'author', label: 'Author', field: 'author', sortable: true, align: 'left' },
+      { name: 'details', label: 'Details', field: 'details', sortable: true, align: 'left' },
+      { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left' },
+      { name: 'bgColor', label: 'Color', field: 'bgColor', sortable: true, align: 'left' },
+      { name: 'icon', label: 'Icon', field: 'icon', sortable: true, align: 'left' },
       { name: 'actions', label: 'Actions', field: 'actions', align: 'left' }
     ]
     const $q = useQuasar()

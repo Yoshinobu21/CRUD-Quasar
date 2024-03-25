@@ -2,6 +2,53 @@
   <div class="subcontent">
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
+    <q-dialog v-model="addEvent" no-backdrop-dismiss>
+
+      <q-form v-if="contextDay" ref='event' @submit="onSubmit" @reset="onReset">
+        <q-card v-if="addEvent" style="width: 400px;">
+          <q-toolbar class="bg-primary text-white">
+            <q-toolbar-title>
+              Add Event
+            </q-toolbar-title>
+            <q-btn flat round color="white" icon="close" v-close-popup></q-btn>
+          </q-toolbar>
+          <q-card-section class="inset-shadow">
+            <q-input v-model="eventForm.title" label="Title"
+              :rules="[v => v && v.length > 0 || 'Field cannot be empty']" autofocus />
+            <q-input v-model="eventForm.details" label="Details" />
+
+            <q-input v-model="eventForm.icon" label="Icon" outlined clearable style="padding-bottom: 20px;">
+              <template #append>
+                <q-icon name="extension" class="cursor-pointer">
+                  <q-popup-proxy v-model="showIconPicker">
+
+                    <q-icon-picker v-model="eventForm.icon" :filter="eventForm.icon" icon-set="fontawesome-v5"
+                      style="height: 300px; width: 300px; background-color: white;" />
+
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+
+            <q-input v-model="eventForm.bgcolor" label="Color" outlined clearable>
+              <template #append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy>
+                    <q-color v-model="eventForm.bgcolor"></q-color>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="OK" type="submit" color="primary"></q-btn>
+            <q-btn flat label="Cancel" type="reset" color="primary" v-close-popup></q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-form>
+    </q-dialog>
+
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%;">
         <q-calendar-month ref="calendar" v-model="selectedDate" animated bordered focusable hoverable no-active-date
@@ -57,6 +104,7 @@ export default defineComponent({
   data () {
     return {
       selectedDate: today(),
+      addEvent: false,
       events: [
         {
           id: 1,
@@ -180,6 +228,7 @@ export default defineComponent({
     }
   },
   methods: {
+
     badgeClasses (event, type) {
       return {
         [`text-white bg-${event.bgcolor}`]: true,
@@ -216,6 +265,7 @@ export default defineComponent({
     },
     onClickDay (data) {
       console.log('onClickDay', data)
+      this.addEvent = true
     },
     onClickWorkweek (data) {
       console.log('onClickWorkweek', data)
