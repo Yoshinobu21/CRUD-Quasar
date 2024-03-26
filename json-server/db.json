@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "id": "9fc4",
+      "title": "teste1",
+      "details": "teste11",
+      "date": "2024-03-27",
+      "bgcolor": "red",
+      "icon": "fas fa-handshake"
+    },
+    {
+      "id": "a7b1",
+      "title": "teste2",
+      "details": "teste23",
+      "date": "2024-03-29",
+      "bgcolor": "green",
+      "icon": "fas fa-handshake"
+    }
+  ]
+}

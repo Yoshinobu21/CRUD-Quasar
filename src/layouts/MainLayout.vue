@@ -40,16 +40,16 @@ const linksList = [
     route: { name: 'home' }
   },
   {
-    title: 'Calendar',
-    caption: '',
-    icon: 'calendar_month',
-    route: { name: 'calendar' }
-  },
-  {
     title: 'Calendar Events',
     caption: '',
     icon: 'calendar_month',
     route: { name: 'calendarEvents' }
+  },
+  {
+    title: 'Calendar Holidays',
+    caption: '',
+    icon: 'calendar_month',
+    route: { name: 'calendar' }
   }
 ]
 

@@ -6,32 +6,9 @@
           :rules="[val => val && val.length > 0 || 'Please type something']" />
         <q-input outlined v-model="form.details" label="Details" lazy-rules class="col-lg-6 col-xs-12"
           :rules="[val => val && val.length > 0 || 'Please type something']" />
-        <q-input v-model="form.icon" label="Icon" outlined clearable style="padding-bottom: 20px;">
-          <template v-slot:append>
-            <q-icon name="extension" class="cursor-pointer">
-              <q-popup-proxy>
-
-                <q-icon-picker v-model="form.icon" :filter="form.icon" icon-set="fontawesome-v5" tooltips
-                  style="height: 300px; width: 300px; background-color: white;" />
-
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-        <q-input v-model="form.bgColor" label="Color" outlined clearable style="padding-bottom: 20px;">
-          <template v-slot:append>
-            <q-icon name="extension" class="cursor-pointer">
-              <q-popup-proxy>
-
-                <q-icon-picker v-model="form.icon" :filter="form.icon" icon-set="fontawesome-v5" tooltips
-                  style="height: 300px; width: 300px; background-color: white;" />
-
-              </q-popup-proxy>
-            </q-icon>
-          </template>
+        <q-input v-model="form.bgcolor" label="Color" outlined clearable style="padding-bottom: 20px;">
         </q-input>
         <q-input v-model="form.date" filled type="date" label="Event Date" />
-
         <div class="col-12 q-gutter-sm">
           <q-btn label="Salvar" color="primary" class="float-right" icon="save" type="submit"></q-btn>
           <q-btn label="Cancelar" color="white" class="float-right" text-color="primary" :to="{ name: 'home' }"></q-btn>
@@ -57,8 +34,7 @@ export default defineComponent({
       title: '',
       details: '',
       date: '',
-      bgColor: '',
-      icon: ''
+      bgcolor: ''
     })
 
     onMounted(async () => {

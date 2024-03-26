@@ -33,8 +33,7 @@ export default defineComponent({
       { name: 'title', label: 'Title', field: 'title', sortable: true, align: 'left' },
       { name: 'details', label: 'Details', field: 'details', sortable: true, align: 'left' },
       { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left' },
-      { name: 'bgColor', label: 'Color', field: 'bgColor', sortable: true, align: 'left' },
-      { name: 'icon', label: 'Icon', field: 'icon', sortable: true, align: 'left' },
+      { name: 'bgcolor', label: 'Color', field: 'bgcolor', sortable: true, align: 'left' },
       { name: 'actions', label: 'Actions', field: 'actions', align: 'left' }
     ]
     const $q = useQuasar()
