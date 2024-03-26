@@ -6,9 +6,7 @@
           :rules="[val => val && val.length > 0 || 'Please type something']" />
         <q-input outlined v-model="form.details" label="Details" lazy-rules class="col-lg-6 col-xs-12"
           :rules="[val => val && val.length > 0 || 'Please type something']" />
-
         <q-select v-model="form.bgcolor" label="Color" outlined clearable style="min-width: 150px" :options="colors" />
-
         <q-input filled v-model="form.date" mask="date" :rules="['date']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -22,7 +20,6 @@
             </q-icon>
           </template>
         </q-input>
-
         <div class="col-12 q-gutter-sm">
           <q-btn label="Salvar" color="primary" class="float-right" icon="save" type="submit"></q-btn>
           <q-btn label="Cancelar" color="white" class="float-right" text-color="primary" :to="{ name: 'home' }"></q-btn>

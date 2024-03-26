@@ -2,6 +2,10 @@
   <div class="subcontent">
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
+    <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
+      <div style="font-size: 2em;">{{ formattedMonth }}</div>
+    </div>
+
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%;">
         <q-calendar-month ref="calendar" v-model="selectedDate" use-navigation focusable hoverable
@@ -36,7 +40,7 @@ import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
 
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import NavigationBar from '../components/NavigationBar.vue'
 import postsService from 'src/services/posts'
 
@@ -49,6 +53,7 @@ export default defineComponent({
 
   setup () {
     const { list } = postsService()
+    const selectedDate = ref(today())
     const events = ref([])
     onMounted(() => {
       getEvents()
@@ -61,8 +66,23 @@ export default defineComponent({
         console.error(error)
       }
     }
+    const formattedMonth = computed(() => {
+      const date = new Date(selectedDate.value)
+      return monthFormatter().format(date) + ' ' + date.getFullYear()
+    })
+    function monthFormatter () {
+      try {
+        return new Intl.DateTimeFormat('pt-BR' || undefined, {
+          month: 'long',
+          timeZone: 'UTC'
+        })
+      } catch (e) {
+        //
+      }
+    }
     return {
-      events
+      events,
+      formattedMonth
     }
   },
   data () {
