@@ -7,11 +7,11 @@
         <q-input outlined v-model="form.details" label="Details" lazy-rules class="col-lg-6 col-xs-12"
           :rules="[val => val && val.length > 0 || 'Please type something']" />
         <q-select v-model="form.bgcolor" label="Color" outlined clearable style="min-width: 150px" :options="colors" />
-        <q-input filled v-model="form.date" mask="date" :rules="['date']">
+        <q-input filled v-model="form.date">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="form.date">
+                <q-date v-model="form.date" mask="YYYY-MM-DD">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -45,7 +45,7 @@ export default defineComponent({
     const form = ref({
       title: '',
       details: '',
-      date: ref(today().replace(/-/g, '/')),
+      date: ref(today()),
       bgcolor: ''
     })
     const colors = [
@@ -74,14 +74,12 @@ export default defineComponent({
         } else {
           await post(form.value)
         }
-
         $q.notify({ message: 'Post created successfully', icon: 'check', color: 'positive' })
         router.push({ name: 'home' })
       } catch (error) {
         console.error(error)
       }
     }
-
     return {
       form,
       onSubmit,
