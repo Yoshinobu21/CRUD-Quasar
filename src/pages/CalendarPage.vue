@@ -189,8 +189,9 @@ export default defineComponent({
       }
     }
 
-    function badgeStyles (day, event) {
+    function badgeStyles (event, day) {
       const s = {}
+      s['background-color'] = event.bgcolor
       // s.left = day.weekday === 0 ? 0 : (day.weekday * parsedCellWidth) + '%'
       // s.top = 0
       // s.bottom = 0

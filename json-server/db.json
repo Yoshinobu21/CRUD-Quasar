@@ -5,14 +5,21 @@
       "title": "Evento teste ",
       "details": "primeiro teste",
       "date": "2024-03-26",
-      "bgcolor": "purple"
+      "bgcolor": "#9933ff"
     },
     {
       "id": "8bf5",
       "title": "Almoço ",
       "details": "Almoço na sexta feira Santa",
       "date": "2024-03-29",
-      "bgcolor": "yellow"
+      "bgcolor": "#ffff33"
+    },
+    {
+      "id": "cf16",
+      "title": "teste de cor",
+      "details": "laranja",
+      "date": "2024-03-01",
+      "bgcolor": "#ff8000"
     }
   ]
 }

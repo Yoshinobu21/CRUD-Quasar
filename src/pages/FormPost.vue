@@ -6,7 +6,6 @@
           :rules="[val => val && val.length > 0 || 'Please type something']" />
         <q-input outlined v-model="form.details" label="Details" lazy-rules class="col-lg-6 col-xs-12"
           :rules="[val => val && val.length > 0 || 'Please type something']" />
-        <q-select v-model="form.bgcolor" label="Color" outlined clearable style="min-width: 150px" :options="colors" />
         <q-input filled v-model="form.date">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -16,6 +15,15 @@
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
                 </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+        <q-input v-model="form.bgcolor" label="Color" outlined clearable>
+          <template #append>
+            <q-icon name="colorize" class="cursor-pointer">
+              <q-popup-proxy>
+                <q-color v-model="form.bgcolor"></q-color>
               </q-popup-proxy>
             </q-icon>
           </template>
