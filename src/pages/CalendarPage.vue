@@ -1,16 +1,6 @@
 <template>
   <div class="subcontent">
-    <q-dialog v-model="displayEvent" no-backdrop-dismiss>
-      <q-card style="width: 500px; height: 400px">
-        <q-toolbar class="bg-primary text-white">
-          <q-toolbar-title>
-            Add Event
-          </q-toolbar-title>
-          <q-btn flat round color="white" icon="close" v-close-popup></q-btn>
-        </q-toolbar>
-        <AddEventsModal></AddEventsModal>
-      </q-card>
-    </q-dialog>
+    <AddEventsModal v-model="displayEvent"></AddEventsModal>
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
