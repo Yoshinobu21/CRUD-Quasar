@@ -1,5 +1,16 @@
 <template>
   <div class="subcontent">
+    <q-dialog v-model="displayEvent" no-backdrop-dismiss>
+      <q-card style="width: 500px; height: 400px">
+        <q-toolbar class="bg-primary text-white">
+          <q-toolbar-title>
+            Add Event
+          </q-toolbar-title>
+          <q-btn flat round color="white" icon="close" v-close-popup></q-btn>
+        </q-toolbar>
+        <AddEventsModal></AddEventsModal>
+      </q-card>
+    </q-dialog>
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
@@ -49,14 +60,15 @@ import {
   onMounted
 } from 'vue'
 import NavigationBar from '../components/NavigationBar.vue'
+import AddEventsModal from '../components/AddEventsModal.vue'
 import Holidays from 'date-holidays'
 import postsService from 'src/services/posts'
-
 export default defineComponent({
   name: 'MonthSlotDayHolidays',
   components: {
     NavigationBar,
-    QCalendarMonth
+    QCalendarMonth,
+    AddEventsModal
   },
 
   setup (props, { slots, emit }) {
@@ -64,7 +76,8 @@ export default defineComponent({
     onMounted(() => {
       getEvents()
     })
-    const events = ref([])
+    const events = ref(false)
+    const displayEvent = ref(false)
     const selectedDate = ref(today()),
       selectedMonth = reactive([]),
       year = ref(new Date().getFullYear()),
@@ -226,6 +239,7 @@ export default defineComponent({
       console.log('onClickDate', data)
     }
     function onClickDay (data) {
+      displayEvent.value = true
       console.log('onClickDay', data)
     }
     function onClickWorkweek (data) {
@@ -245,6 +259,7 @@ export default defineComponent({
       locale,
       eventsMap,
       formattedMonth,
+      displayEvent,
       badgeClasses,
       badgeStyles,
       onToday,

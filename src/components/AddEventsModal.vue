@@ -31,7 +31,8 @@
         </q-input>
         <div class="col-12 q-gutter-sm">
           <q-btn label="Salvar" color="primary" class="float-right" icon="save" type="submit"></q-btn>
-          <q-btn label="Cancelar" color="white" class="float-right" text-color="primary" :to="{ name: 'home' }"></q-btn>
+          <q-btn label="Cancelar" color="white" class="float-right" text-color="primary" type="reset"
+            v-close-popup></q-btn>
         </div>
       </q-form>
     </q-page>
@@ -41,15 +42,14 @@
 <script>
 import { defineComponent, ref, onMounted } from 'vue'
 import postsService from 'src/services/posts'
-import { useQuasar } from 'quasar'
-import { useRouter, useRoute } from 'vue-router'
+import { ClosePopup, useQuasar } from 'quasar'
+import { useRoute } from 'vue-router'
 import { today } from '@quasar/quasar-ui-qcalendar/src'
 export default defineComponent({
   name: 'FormPost',
   setup () {
     const $q = useQuasar()
     const { post, getById, update } = postsService()
-    const router = useRouter()
     const route = useRoute()
     const form = ref({
       title: '',
@@ -84,7 +84,7 @@ export default defineComponent({
           await post(form.value)
         }
         $q.notify({ message: 'Post created successfully', icon: 'check', color: 'positive' })
-        router.push({ name: 'home' })
+        ClosePopup()
       } catch (error) {
         console.error(error)
       }
