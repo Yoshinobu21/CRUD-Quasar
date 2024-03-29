@@ -1,6 +1,6 @@
 <template>
   <div class="subcontent">
-    <AddEventsModal v-model="displayEvent"></AddEventsModal>
+    <AddEventsModal v-model="displayEvent" v-if="displayEvent" :eventDate="eventDate"></AddEventsModal>
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
@@ -68,6 +68,7 @@ export default defineComponent({
     })
     const events = ref(false)
     const displayEvent = ref(false)
+    const eventDate = ref(today())
     const selectedDate = ref(today()),
       selectedMonth = reactive([]),
       year = ref(new Date().getFullYear()),
@@ -124,6 +125,7 @@ export default defineComponent({
         console.error(error)
       }
     }
+
     /// where the magic happens...
     const eventsMap = computed(() => {
       const map = {}
@@ -230,7 +232,9 @@ export default defineComponent({
     }
     function onClickDay (data) {
       displayEvent.value = true
+      eventDate.value = data.scope.timestamp.date
       console.log('onClickDay', data)
+      console.log('onClickDayawe', eventDate.value)
     }
     function onClickWorkweek (data) {
       console.log('onClickWorkweek', data)
@@ -248,8 +252,10 @@ export default defineComponent({
       country,
       locale,
       eventsMap,
+      eventDate,
       formattedMonth,
       displayEvent,
+      getEvents,
       badgeClasses,
       badgeStyles,
       onToday,
@@ -263,8 +269,17 @@ export default defineComponent({
       onClickHeadDay,
       onClickHeadWorkweek
     }
+  },
+  watch: {
+    displayEvent (newValue, oldValue) {
+      // Execute your function when myBoolean changes
+      if (newValue !== oldValue) {
+        this.getEvents()
+      }
+    }
   }
 })
+
 </script>
 
 <style lang="sass" scoped>

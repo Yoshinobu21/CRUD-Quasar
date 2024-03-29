@@ -1,6 +1,6 @@
 <template>
   <q-dialog no-backdrop-dismiss>
-    <q-card style="width: 500px; height: auto">
+    <q-card style="width: auto; height: auto">
       <q-toolbar class="bg-primary text-white">
         <q-toolbar-title>
           Add Event
@@ -27,7 +27,6 @@
                 </q-icon>
               </template>
             </q-input>
-            <div class="row"></div>
             <q-input v-model="form.bgcolor" label="Color" outlined clearable
               :rules="[val => val && val.length > 0 || 'Please type something']">
               <template #append>
@@ -38,10 +37,11 @@
                 </q-icon>
               </template>
             </q-input>
-
             <div class="col-12 q-gutter-sm">
-              <q-btn label="Salvar" color="primary" class="float-right" icon="save" type="submit"></q-btn>
-              <q-btn label="Cancelar" color="white" class="float-right" text-color="primary" type="reset"
+              <q-btn label="Salvar" color="primary" class="float-right" icon="save"
+                :disable="!form.title || !form.details || !form.date || !form.bgcolor" type="submit"
+                v-close-popup></q-btn>
+              <q-btn id="cancel" label="Cancelar" color="white" class="float-right" text-color="primary" type="reset"
                 v-close-popup></q-btn>
             </div>
           </q-form>
@@ -56,18 +56,23 @@ import { defineComponent, ref, onMounted } from 'vue'
 import postsService from 'src/services/posts'
 import { useQuasar } from 'quasar'
 import { useRoute } from 'vue-router'
-import { today } from '@quasar/quasar-ui-qcalendar/src'
 
 export default defineComponent({
   name: 'AddEventsModal',
-  setup () {
+  props: {
+    eventDate: String
+  },
+
+  setup (props) {
     const $q = useQuasar()
     const { post, getById, update } = postsService()
     const route = useRoute()
+
+    const isDisable = true
     const form = ref({
       title: '',
       details: '',
-      date: ref(today()),
+      date: props.eventDate,
       bgcolor: ''
     })
     const colors = [
@@ -78,7 +83,9 @@ export default defineComponent({
       if (route.params.id) {
         getPost(route.params.id)
       }
-    })
+      console.log(props.eventDate)
+    }
+    )
 
     const getPost = async (id) => {
       try {
@@ -96,16 +103,26 @@ export default defineComponent({
         } else {
           await post(form.value)
         }
+        clearForm()
         $q.notify({ message: 'Post created successfully', icon: 'check', color: 'positive' })
       } catch (error) {
         console.error(error)
       }
     }
+
+    function clearForm () {
+      form.value.title = ''
+      form.value.details = ''
+      form.value.date = ''
+      form.value.bgcolor = ''
+    }
+
     return {
       form,
       onSubmit,
       getPost,
-      colors
+      colors,
+      isDisable
     }
   }
 })
