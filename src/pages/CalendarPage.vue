@@ -10,8 +10,8 @@
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%;">
         <q-calendar-month ref="calendar" v-model="selectedDate" use-navigation focusable hoverable animated bordered
-          :month-label-size="size" :focus-type="['day']" :day-min-height="90" :locale="locale" @change="onChange"
-          @moved="onMoved" @click-date="onClickDate" @click-day="onClickDay" @click-workweek="onClickWorkweek"
+          :focus-type="['day']" :day-min-height="90" :locale="locale" @change="onChange" @moved="onMoved"
+          @click-date="onClickDate" @click-day="onClickDay" @click-workweek="onClickWorkweek"
           @click-head-workweek="onClickHeadWorkweek" @click-head-day="onClickHeadDay">
           <template #day="{ scope: { timestamp } }">
             <template v-for="events in eventsMap[timestamp.date]" :key="events.id">
