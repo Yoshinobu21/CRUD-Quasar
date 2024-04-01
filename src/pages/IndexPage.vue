@@ -4,7 +4,7 @@
       <template v-slot:top>
         <span class="text-h5">Eventos</span>
         <q-space />
-        <q-btn color="primary" label="Add Event" :to="{ name: 'formPost' }"></q-btn>
+        <q-btn color="primary" label="Adicionar Eventos" :to="{ name: 'formPost' }"></q-btn>
       </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-sm">
@@ -30,11 +30,11 @@ export default defineComponent({
     const columns = [
 
       { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' },
-      { name: 'title', label: 'Title', field: 'title', sortable: true, align: 'left' },
-      { name: 'details', label: 'Details', field: 'details', sortable: true, align: 'left' },
-      { name: 'date', label: 'Date', field: 'date', sortable: true, align: 'left' },
-      { name: 'bgcolor', label: 'Color', field: 'bgcolor', sortable: true, align: 'left' },
-      { name: 'actions', label: 'Actions', field: 'actions', align: 'left' }
+      { name: 'title', label: 'Título', field: 'title', sortable: true, align: 'left' },
+      { name: 'details', label: 'Detalhes', field: 'details', sortable: true, align: 'left' },
+      { name: 'date', label: 'Data', field: 'date', sortable: true, align: 'left' },
+      { name: 'bgcolor', label: 'Cor', field: 'bgcolor', sortable: true, align: 'left' },
+      { name: 'actions', label: 'Ações', field: 'actions', align: 'left' }
     ]
     const $q = useQuasar()
     const router = useRouter()

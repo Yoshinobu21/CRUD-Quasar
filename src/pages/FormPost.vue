@@ -2,11 +2,12 @@
   <div>
     <q-page padding>
       <q-form @submit="onSubmit" class="row q-col-gutter-sm">
-        <q-input outlined v-model="form.title" label="Title" lazy-rules class="col-lg-6 col-xs-12"
-          :rules="[val => val && val.length > 0 || 'Please type something']" />
-        <q-input outlined v-model="form.details" label="Details" lazy-rules class="col-lg-6 col-xs-12"
-          :rules="[val => val && val.length > 0 || 'Please type something']" />
-        <q-input filled v-model="form.date" :rules="[val => val && val.length > 0 || 'Please type something']">
+        <q-input outlined v-model="form.title" label="Título" lazy-rules class="col-lg-6 col-xs-12"
+          :rules="[val => val && val.length > 0 || 'Favor, preencher o campo obrigatório']" />
+        <q-input outlined v-model="form.details" label="Detalhes" lazy-rules class="col-lg-6 col-xs-12"
+          :rules="[val => val && val.length > 0 || 'Favor, preencher o campo obrigatório']" />
+        <q-input filled v-model="form.date"
+          :rules="[val => val && val.length > 0 || 'Favor, preencher o campo obrigatório']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -19,8 +20,8 @@
             </q-icon>
           </template>
         </q-input>
-        <q-input v-model="form.bgcolor" label="Color" outlined clearable
-          :rules="[val => val && val.length > 0 || 'Please type something']">
+        <q-input v-model="form.bgcolor" label="Cor" outlined clearable
+          :rules="[val => val && val.length > 0 || 'Favor, preencher o campo obrigatório']">
           <template #append>
             <q-icon name="colorize" class="cursor-pointer">
               <q-popup-proxy>
