@@ -56,19 +56,16 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import postsService from 'src/services/posts'
 import { useQuasar } from 'quasar'
-import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'AddEventsModal',
   props: {
-    eventDate: String
+    eventId: String,
   },
 
   setup (props) {
     const $q = useQuasar()
     const { post, getById, update } = postsService()
-    const route = useRoute()
-
     const isDisable = true
     const form = ref({
       title: '',
@@ -76,15 +73,11 @@ export default defineComponent({
       date: props.eventDate,
       bgcolor: ''
     })
-    const colors = [
-      'blue', 'purple', 'green', 'yellow', 'red'
-    ]
 
     onMounted(async () => {
-      if (route.params.id) {
-        getPost(route.params.id)
+      if (props.eventId) {
+        getPost(props.eventId)
       }
-      console.log(props.eventDate)
     }
     )
 
@@ -122,7 +115,6 @@ export default defineComponent({
       form,
       onSubmit,
       getPost,
-      colors,
       isDisable
     }
   }

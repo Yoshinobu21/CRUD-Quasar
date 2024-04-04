@@ -1,6 +1,6 @@
 <template>
   <div class="subcontent">
-    <AddEventsModal v-model="addEvent" v-if="addEvent" :eventDate="eventDate"></AddEventsModal>
+    <AddEventsModal v-model="addEvent" v-if="addEvent" :eventId="eventId" :eventDate="eventDate"></AddEventsModal>
     <!-- modal para apresentar o Evento -->
     <q-dialog v-model="displayEvent">
       <q-card v-if="showingEvent" style="width: auto; height: auto">
@@ -8,8 +8,8 @@
           <q-toolbar-title>
             {{ showingEvent.title }}
           </q-toolbar-title>
-          <q-btn flat round color="white" icon="delete" v-close-popup></q-btn>
-          <q-btn flat round color="white" icon="edit" v-close-popup></q-btn>
+          <q-btn flat round color="white" icon="delete" v-close-popup @click="handleDeletePost(showingEvent)"></q-btn>
+          <q-btn flat round color="white" icon="edit" v-close-popup @click="handleEditPost(showingEvent)"></q-btn>
           <q-btn flat round color="white" icon="close" v-close-popup></q-btn>
         </q-toolbar>
         <q-card-section class="inset-shadow">
@@ -74,6 +74,7 @@ import NavigationBar from '../components/NavigationBar.vue'
 import AddEventsModal from '../components/AddEventsModal.vue'
 import Holidays from 'date-holidays'
 import postsService from 'src/services/posts'
+import { useQuasar } from 'quasar'
 export default defineComponent({
   name: 'MonthSlotDayHolidays',
   components: {
@@ -83,15 +84,18 @@ export default defineComponent({
   },
 
   setup (props, { slots, emit }) {
-    const { list } = postsService()
+    const { list, remove } = postsService()
     onMounted(() => {
       getEvents()
     })
+
+    const $q = useQuasar()
     const events = ref(false)
     const showingEvent = ref(null)
     const displayEvent = ref(false)
     const addEvent = ref(false)
     const eventDate = ref(today())
+    const eventId = ref(null)
     const selectedDate = ref(today()),
       selectedMonth = reactive([]),
       year = ref(new Date().getFullYear()),
@@ -149,12 +153,34 @@ export default defineComponent({
       }
     }
     function showEvent (event) {
-      console.log(event)
       displayEvent.value = true
       showingEvent.value = event
       console.log(showingEvent)
     }
-    /// where the magic happens...
+
+    const handleDeletePost = async (events) => {
+      try {
+        $q.dialog({
+          title: 'Delete',
+          message: 'Would you like to delete the post?',
+          cancel: true,
+          persistent: true
+        }).onOk(async () => {
+          await remove(events.id)
+          $q.notify({ message: 'deleted successfully', icon: 'check', color: 'positive' })
+          getEvents()
+        })
+      } catch (error) {
+        $q.notify({ message: 'deleted unsuccessfully', icon: 'times', color: 'negative' })
+      }
+    }
+
+    const handleEditPost = (events) => {
+      eventId.value = events.id
+      eventDate.value = events.date
+      addEvent.value = true
+    }
+
     const eventsMap = computed(() => {
       const map = {}
       if (selectedMonth.length > 0) {
@@ -272,7 +298,6 @@ export default defineComponent({
       addEvent.value = true
       eventDate.value = data.scope.timestamp.date
       console.log('onClickDay', data)
-      console.log('onClickDayawe', eventDate.value)
     }
     function onClickWorkweek (data) {
       console.log('onClickWorkweek', data)
@@ -291,11 +316,14 @@ export default defineComponent({
       locale,
       eventsMap,
       eventDate,
+      eventId,
       formattedMonth,
       addEvent,
       showingEvent,
       displayEvent,
       getEvents,
+      handleEditPost,
+      handleDeletePost,
       badgeClasses,
       badgeStyles,
       displayClasses,
