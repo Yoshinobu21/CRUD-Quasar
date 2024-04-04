@@ -60,7 +60,7 @@ import { useQuasar } from 'quasar'
 export default defineComponent({
   name: 'AddEventsModal',
   props: {
-    eventId: String,
+    eventId: String
   },
 
   setup (props) {
