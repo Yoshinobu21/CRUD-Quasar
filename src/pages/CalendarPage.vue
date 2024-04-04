@@ -1,6 +1,26 @@
 <template>
   <div class="subcontent">
-    <AddEventsModal v-model="displayEvent" v-if="displayEvent" :eventDate="eventDate"></AddEventsModal>
+    <AddEventsModal v-model="addEvent" v-if="addEvent" :eventDate="eventDate"></AddEventsModal>
+    <!-- modal para apresentar o Evento -->
+    <q-dialog v-model="displayEvent">
+      <q-card v-if="showingEvent" style="width: auto; height: auto">
+        <q-toolbar :class="displayClasses(showingEvent)" :style="displayStyles(showingEvent)" style="min-width: 400px;">
+          <q-toolbar-title>
+            {{ showingEvent.title }}
+          </q-toolbar-title>
+          <q-btn flat round color="white" icon="delete" v-close-popup></q-btn>
+          <q-btn flat round color="white" icon="edit" v-close-popup></q-btn>
+          <q-btn flat round color="white" icon="close" v-close-popup></q-btn>
+        </q-toolbar>
+        <q-card-section class="inset-shadow">
+          {{ showingEvent.details }}
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
@@ -10,12 +30,13 @@
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%;">
         <q-calendar-month ref="calendar" v-model="selectedDate" use-navigation focusable hoverable animated bordered
-          :month-label-size="size" :focus-type="['day']" :day-min-height="90" :locale="locale" @change="onChange"
-          @moved="onMoved" @click-date="onClickDate" @click-day="onClickDay" @click-workweek="onClickWorkweek"
+          :focus-type="['day']" :day-min-height="90" :locale="locale" @change="onChange" @moved="onMoved"
+          @click-date="onClickDate" @click-day="onClickDay" @click-workweek="onClickWorkweek"
           @click-head-workweek="onClickHeadWorkweek" @click-head-day="onClickHeadDay">
           <template #day="{ scope: { timestamp } }">
             <template v-for="events in eventsMap[timestamp.date]" :key="events.id">
-              <div :class="badgeClasses(events, 'day')" :style="badgeStyles(events, 'day')" class="my-event">
+              <div :class="badgeClasses(events, 'day')" :style="badgeStyles(events, 'day')" class="my-event"
+                @click.stop.prevent="showEvent(events)">
                 <div class="title q-calendar__ellipsis">
                   {{ events.title + (events.time ? ' - ' + events.time : '') }}
                   <q-tooltip>{{ events.details }}</q-tooltip>
@@ -67,7 +88,9 @@ export default defineComponent({
       getEvents()
     })
     const events = ref(false)
+    const showingEvent = ref(null)
     const displayEvent = ref(false)
+    const addEvent = ref(false)
     const eventDate = ref(today())
     const selectedDate = ref(today()),
       selectedMonth = reactive([]),
@@ -125,7 +148,12 @@ export default defineComponent({
         console.error(error)
       }
     }
-
+    function showEvent (event) {
+      console.log(event)
+      displayEvent.value = true
+      showingEvent.value = event
+      console.log(showingEvent)
+    }
     /// where the magic happens...
     const eventsMap = computed(() => {
       const map = {}
@@ -203,6 +231,16 @@ export default defineComponent({
       // s.width = (event.days * parsedCellWidth) + '%'
       return s
     }
+    function displayClasses (event) {
+      return {
+        [`text-white bg-${event.bgcolor}`]: true
+      }
+    }
+    function displayStyles (event) {
+      const s = {}
+      s['background-color'] = event.bgcolor
+      return s
+    }
 
     function onToday () {
       calendar.value.moveToToday()
@@ -231,7 +269,7 @@ export default defineComponent({
       console.log('onClickDate', data)
     }
     function onClickDay (data) {
-      displayEvent.value = true
+      addEvent.value = true
       eventDate.value = data.scope.timestamp.date
       console.log('onClickDay', data)
       console.log('onClickDayawe', eventDate.value)
@@ -254,10 +292,15 @@ export default defineComponent({
       eventsMap,
       eventDate,
       formattedMonth,
+      addEvent,
+      showingEvent,
       displayEvent,
       getEvents,
       badgeClasses,
       badgeStyles,
+      displayClasses,
+      displayStyles,
+      showEvent,
       onToday,
       onPrev,
       onNext,
@@ -271,7 +314,7 @@ export default defineComponent({
     }
   },
   watch: {
-    displayEvent (newValue, oldValue) {
+    addEvent (newValue, oldValue) {
       // Execute your function when myBoolean changes
       if (newValue !== oldValue) {
         this.getEvents()
