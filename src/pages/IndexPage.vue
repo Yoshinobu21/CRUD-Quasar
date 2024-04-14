@@ -8,8 +8,8 @@
       </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-sm">
-          <q-btn icon="edit" color="info" dense size="md" @click="handleEditPost(props.row.id)" />
-          <q-btn icon="delete" color="negative" dense size="md" @click="handleDeletePost(props.row.id)" />
+          <q-btn icon="edit" color="info" dense size="md" @click="handleEditPost(props.row._id)" />
+          <q-btn icon="delete" color="negative" dense size="md" @click="handleDeletePost(props.row._id)" />
         </q-td>
       </template>
     </q-table>
@@ -29,7 +29,7 @@ export default defineComponent({
     const { list, remove } = postsService()
     const columns = [
 
-      { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' },
+      { name: 'id', label: 'Id', field: '_id', sortable: true, align: 'left' },
       { name: 'title', label: 'Título', field: 'title', sortable: true, align: 'left' },
       { name: 'details', label: 'Detalhes', field: 'details', sortable: true, align: 'left' },
       { name: 'date', label: 'Data', field: 'date', sortable: true, align: 'left' },
