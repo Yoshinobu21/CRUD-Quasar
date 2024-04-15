@@ -108,7 +108,6 @@ export default defineComponent({
     }
 
     function clearForm () {
-      form.value.id = ''
       form.value.title = ''
       form.value.details = ''
       form.value.date = ''

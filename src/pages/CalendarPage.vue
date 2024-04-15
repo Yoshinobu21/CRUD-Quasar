@@ -296,6 +296,7 @@ export default defineComponent({
     }
     function onClickDay (data) {
       addEvent.value = true
+      eventId.value = null
       eventDate.value = data.scope.timestamp.date
       console.log('onClickDay', data)
     }
