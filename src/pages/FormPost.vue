@@ -79,7 +79,7 @@ export default defineComponent({
 
     const onSubmit = async () => {
       try {
-        if (form.value.id) {
+        if (form.value._id) {
           await update(form.value)
         } else {
           await post(form.value)

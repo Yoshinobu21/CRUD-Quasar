@@ -34,7 +34,7 @@
           @click-date="onClickDate" @click-day="onClickDay" @click-workweek="onClickWorkweek"
           @click-head-workweek="onClickHeadWorkweek" @click-head-day="onClickHeadDay">
           <template #day="{ scope: { timestamp } }">
-            <template v-for="events in eventsMap[timestamp.date]" :key="events.id">
+            <template v-for="events in eventsMap[timestamp.date]" :key="events._id">
               <div :class="badgeClasses(events, 'day')" :style="badgeStyles(events, 'day')" class="my-event"
                 @click.stop.prevent="showEvent(events)">
                 <div class="title q-calendar__ellipsis">
@@ -166,7 +166,7 @@ export default defineComponent({
           cancel: true,
           persistent: true
         }).onOk(async () => {
-          await remove(events.id)
+          await remove(events._id)
           $q.notify({ message: 'deleted successfully', icon: 'check', color: 'positive' })
           getEvents()
         })
@@ -176,7 +176,7 @@ export default defineComponent({
     }
 
     const handleEditPost = (events) => {
-      eventId.value = events.id
+      eventId.value = events._id
       eventDate.value = events.date
       addEvent.value = true
     }
@@ -343,7 +343,11 @@ export default defineComponent({
   },
   watch: {
     addEvent (newValue, oldValue) {
-      // Execute your function when myBoolean changes
+      if (newValue !== oldValue) {
+        this.getEvents()
+      }
+    },
+    displayEvent (newValue, oldValue) {
       if (newValue !== oldValue) {
         this.getEvents()
       }

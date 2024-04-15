@@ -44,6 +44,7 @@
                 v-close-popup></q-btn>
               <q-btn id="cancel" label="Cancelar" color="white" class="float-right" text-color="primary" type="reset"
                 v-close-popup></q-btn>
+                <p>{{ eventId }}</p>
             </div>
           </q-form>
         </q-page>
@@ -69,6 +70,7 @@ export default defineComponent({
     const { post, getById, update } = postsService()
     const isDisable = true
     const form = ref({
+      _id: props.eventId,
       title: '',
       details: '',
       date: props.eventDate,
@@ -93,7 +95,7 @@ export default defineComponent({
 
     const onSubmit = async () => {
       try {
-        if (form.value.id) {
+        if (form.value._id) {
           await update(form.value)
         } else {
           await post(form.value)
@@ -106,6 +108,7 @@ export default defineComponent({
     }
 
     function clearForm () {
+      form.value.id = ''
       form.value.title = ''
       form.value.details = ''
       form.value.date = ''
