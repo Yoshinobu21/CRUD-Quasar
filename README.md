@@ -1,4 +1,4 @@
-Backend para o projeto no link abaixo:
+Backend para o projeto no link:
 https://github.com/Yoshinobu21/backend-calendar
 
 
