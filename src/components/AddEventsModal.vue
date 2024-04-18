@@ -44,7 +44,6 @@
                 v-close-popup></q-btn>
               <q-btn id="cancel" label="Cancelar" color="white" class="float-right" text-color="primary" type="reset"
                 v-close-popup></q-btn>
-                <p>{{ eventId }}</p>
             </div>
           </q-form>
         </q-page>
