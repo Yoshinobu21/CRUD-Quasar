@@ -68,7 +68,8 @@ import {
   ref,
   reactive,
   computed,
-  onMounted
+  onMounted,
+  watch
 } from 'vue'
 import NavigationBar from '../components/NavigationBar.vue'
 import AddEventsModal from '../components/AddEventsModal.vue'
@@ -309,7 +310,14 @@ export default defineComponent({
     function onClickHeadWorkweek (data) {
       console.log('onClickHeadWorkweek', data)
     }
-
+    watch(addEvent, async (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        getEvents()
+      }
+      if (oldValue !== newValue) {
+        getEvents()
+      }
+    })
     return {
       selectedDate,
       calendar,
@@ -340,18 +348,6 @@ export default defineComponent({
       onClickWorkweek,
       onClickHeadDay,
       onClickHeadWorkweek
-    }
-  },
-  watch: {
-    addEvent (newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.getEvents()
-      }
-    },
-    displayEvent (newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.getEvents()
-      }
     }
   }
 })
