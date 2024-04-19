@@ -38,7 +38,7 @@
               <div :class="badgeClasses(events, 'day')" :style="badgeStyles(events, 'day')" class="my-event"
                 @click.stop.prevent="showEvent(events)">
                 <div class="title q-calendar__ellipsis">
-                  {{ events.title + (events.time ? ' - ' + events.time : '') }}
+                  {{ events.title }}
                   <q-tooltip>{{ events.details }}</q-tooltip>
                 </div>
               </div>
