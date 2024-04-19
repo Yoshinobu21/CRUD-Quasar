@@ -162,17 +162,17 @@ export default defineComponent({
     const handleDeletePost = async (events) => {
       try {
         $q.dialog({
-          title: 'Delete',
-          message: 'Would you like to delete the post?',
+          title: 'Deletar',
+          message: 'Você deseja mesmo deletar esse evento?',
           cancel: true,
           persistent: true
         }).onOk(async () => {
           await remove(events._id)
-          $q.notify({ message: 'deleted successfully', icon: 'check', color: 'positive' })
+          $q.notify({ message: 'Evento deletado com sucesso', icon: 'check', color: 'positive' })
           getEvents()
         })
       } catch (error) {
-        $q.notify({ message: 'deleted unsuccessfully', icon: 'times', color: 'negative' })
+        $q.notify({ message: 'Evento não deletado com sucesso', icon: 'times', color: 'negative' })
       }
     }
 

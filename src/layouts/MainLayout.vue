@@ -34,16 +34,16 @@ import EssentialLink from 'components/EssentialLink.vue'
 
 const linksList = [
   {
-    title: 'Home',
-    caption: '',
-    icon: 'home',
-    route: { name: 'home' }
-  },
-  {
     title: 'Calendário',
     caption: '',
     icon: 'calendar_month',
     route: { name: 'calendar' }
+  },
+  {
+    title: 'Eventos',
+    caption: '',
+    icon: 'home',
+    route: { name: 'home' }
   }
 ]
 

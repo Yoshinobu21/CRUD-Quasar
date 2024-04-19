@@ -96,11 +96,12 @@ export default defineComponent({
       try {
         if (form.value._id) {
           await update(form.value)
+          $q.notify({ message: 'Evento atualizado com sucecsso', icon: 'check', color: 'positive' })
         } else {
           await post(form.value)
+          $q.notify({ message: 'Evento criado com sucecsso', icon: 'check', color: 'positive' })
         }
         clearForm()
-        $q.notify({ message: 'Post created successfully', icon: 'check', color: 'positive' })
       } catch (error) {
         console.error(error)
       }

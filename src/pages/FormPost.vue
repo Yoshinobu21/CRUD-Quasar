@@ -84,7 +84,7 @@ export default defineComponent({
         } else {
           await post(form.value)
         }
-        $q.notify({ message: 'Post created successfully', icon: 'check', color: 'positive' })
+        $q.notify({ message: 'Evento criado com sucesso', icon: 'check', color: 'positive' })
         router.push({ name: 'home' })
       } catch (error) {
         console.error(error)
