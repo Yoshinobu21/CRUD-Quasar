@@ -44,6 +44,12 @@ const linksList = [
     caption: '',
     icon: 'home',
     route: { name: 'home' }
+  },
+  {
+    title: 'Day',
+    caption: '',
+    icon: 'home',
+    route: { name: 'day' }
   }
 ]
 

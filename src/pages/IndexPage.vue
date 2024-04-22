@@ -34,6 +34,7 @@ export default defineComponent({
       { name: 'details', label: 'Detalhes', field: 'details', sortable: true, align: 'left' },
       { name: 'date', label: 'Data', field: 'date', sortable: true, align: 'left' },
       { name: 'bgcolor', label: 'Cor', field: 'bgcolor', sortable: true, align: 'left' },
+      { name: 'duration', label: 'Duração', field: 'duration', sortable: true, align: 'left' },
       { name: 'actions', label: 'Ações', field: 'actions', align: 'left' }
     ]
     const $q = useQuasar()

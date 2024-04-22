@@ -15,18 +15,25 @@
         <q-card-section class="inset-shadow">
           {{ showingEvent.details }}
         </q-card-section>
+        <q-card-section class="inset-shadow">
+          Horário inicial: {{ showingEvent.timeStart }} <br>
+          Horário Final: {{ showingEvent.timeFinish }}
+        </q-card-section>
+        <q-card-section class="inset-shadow">
+          Duração: {{ showingEvent.duration }} Minutos
+        </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="OK" color="primary" v-close-popup></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
-
+   <!-- Barra de navegação e mês atual-->
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
-
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
       <div style="font-size: 2em;">{{ formattedMonth }}</div>
     </div>
 
+   <!-- Calendário mensal -->
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%;">
         <q-calendar-month ref="calendar" v-model="selectedDate" use-navigation focusable hoverable animated bordered
@@ -38,8 +45,8 @@
               <div :class="badgeClasses(events, 'day')" :style="badgeStyles(events, 'day')" class="my-event"
                 @click.stop.prevent="showEvent(events)">
                 <div class="title q-calendar__ellipsis">
-                  {{ events.title + (events.time ? ' - ' + events.time : '') }}
-                  <q-tooltip>{{ events.details }}</q-tooltip>
+                  {{ events.title + (events.timeStart ? ' - ' + events.timeStart : '') }}
+                  <q-tooltip>{{ events.details }} - Duração: {{ events.duration }} Minutos</q-tooltip>
                 </div>
               </div>
             </template>
@@ -48,11 +55,89 @@
       </div>
     </div>
   </div>
+
+  <!-- Apresentação dos eventos diários -->
+
+  <div class="row justify-center">
+    <div style="display: flex; max-width: 800px; width: 100%; height: 400px;">
+      <q-calendar-day
+        ref="calendar"
+        v-model="selectedDate"
+        view="day"
+        animated
+        bordered
+        transition-next="slide-left"
+        transition-prev="slide-right"
+        no-active-date
+        :interval-minutes="15"
+        :interval-start="24"
+        :interval-count="68"
+        :interval-height="28"
+        @change="onChange"
+        @moved="onMoved"
+        @click-date="onClickDate"
+        @click-time="onClickTime"
+        @click-interval="onClickInterval"
+        @click-head-intervals="onClickHeadIntervals"
+        @click-head-day="onClickHeadDay"
+      >
+        <template #head-day-event="{ scope: { timestamp } }">
+          <div style="display: flex; justify-content: center; flex-wrap: wrap; padding: 2px;">
+            <template
+              v-for="event in eventsMap[timestamp.date]"
+              :key="event.id"
+            >
+              <q-badge
+                v-if="!event.time"
+                :class="badgeClasses(event, 'header')"
+                :style="badgeStyles(event, 'header')"
+                style="width: 100%; cursor: pointer; height: 12px; font-size: 10px; margin: 1px;"
+              >
+                <div class="title q-calendar__ellipsis">
+                  {{ event.title }}
+                  <q-tooltip>{{ event.details }}</q-tooltip>
+                </div>
+              </q-badge>
+              <q-badge
+                v-else
+                :class="badgeClasses(event, 'header')"
+                :style="badgeStyles(event, 'header')"
+                style="margin: 1px; width: 10px; max-width: 10px; height: 10px; max-height: 10px; cursor: pointer"
+                @click="scrollToEvent(event)"
+              >
+                <q-tooltip>{{ event.time + ' - ' + event.details }}</q-tooltip>
+              </q-badge>
+            </template>
+          </div>
+        </template>
+
+        <template #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }">
+          <template
+            v-for="event in getEvent(timestamp.date)"
+            :key="event._id"
+          >
+            <div
+              v-if="event.time !== undefined"
+              class="my-event"
+              :class="badgeClasses(event, 'body')"
+              :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)"
+            >
+              <div class="title q-calendar__ellipsis">
+                {{ event.title }}
+                <q-tooltip>{{ event.time + ' - ' + event.details }}</q-tooltip>
+              </div>
+            </div>
+          </template>
+        </template>
+      </q-calendar-day>
+    </div>
+  </div>
 </template>
 
 <script>
 import {
   QCalendarMonth,
+  QCalendarDay,
   PARSE_DATE, // regex for parsing out date
   addToDate,
   parseTimestamp,
@@ -81,7 +166,8 @@ export default defineComponent({
   components: {
     NavigationBar,
     QCalendarMonth,
-    AddEventsModal
+    AddEventsModal,
+    QCalendarDay
   },
 
   setup (props, { slots, emit }) {
@@ -249,13 +335,14 @@ export default defineComponent({
       }
     }
 
-    function badgeStyles (event, day) {
+    function badgeStyles (event, day, timeStartPos = undefined, timeDurationHeight = undefined) {
       const s = {}
       s['background-color'] = event.bgcolor
-      // s.left = day.weekday === 0 ? 0 : (day.weekday * parsedCellWidth) + '%'
-      // s.top = 0
-      // s.bottom = 0
-      // s.width = (event.days * parsedCellWidth) + '%'
+      if (timeStartPos && timeDurationHeight) {
+        s.top = timeStartPos(event.time) + 'px'
+        s.height = timeDurationHeight(event.duration) + 'px'
+      }
+      s['align-items'] = 'flex-start'
       return s
     }
     function displayClasses (event) {
@@ -267,6 +354,10 @@ export default defineComponent({
       const s = {}
       s['background-color'] = event.bgcolor
       return s
+    }
+
+    function scrollToEvent (event) {
+      this.$refs.calendar.scrollToTime(event.time, 350)
     }
 
     function onToday () {
@@ -310,6 +401,15 @@ export default defineComponent({
     function onClickHeadWorkweek (data) {
       console.log('onClickHeadWorkweek', data)
     }
+    function onClickTime (data) {
+      console.log('onClickTime', data)
+    }
+    function onClickInterval (data) {
+      console.log('onClickInterval', data)
+    }
+    function onClickHeadIntervals (data) {
+      console.log('onClickHeadIntervals', data)
+    }
     watch(addEvent, async (newValue, oldValue) => {
       if (newValue !== oldValue) {
         getEvents()
@@ -318,6 +418,7 @@ export default defineComponent({
         getEvents()
       }
     })
+
     return {
       selectedDate,
       calendar,
@@ -347,7 +448,11 @@ export default defineComponent({
       onClickDay,
       onClickWorkweek,
       onClickHeadDay,
-      onClickHeadWorkweek
+      onClickHeadWorkweek,
+      scrollToEvent,
+      onClickTime,
+      onClickInterval,
+      onClickHeadIntervals
     }
   }
 })
