@@ -55,89 +55,11 @@
       </div>
     </div>
   </div>
-
-  <!-- Apresentação dos eventos diários -->
-
-  <div class="row justify-center">
-    <div style="display: flex; max-width: 800px; width: 100%; height: 400px;">
-      <q-calendar-day
-        ref="calendar"
-        v-model="selectedDate"
-        view="day"
-        animated
-        bordered
-        transition-next="slide-left"
-        transition-prev="slide-right"
-        no-active-date
-        :interval-minutes="15"
-        :interval-start="24"
-        :interval-count="68"
-        :interval-height="28"
-        @change="onChange"
-        @moved="onMoved"
-        @click-date="onClickDate"
-        @click-time="onClickTime"
-        @click-interval="onClickInterval"
-        @click-head-intervals="onClickHeadIntervals"
-        @click-head-day="onClickHeadDay"
-      >
-        <template #head-day-event="{ scope: { timestamp } }">
-          <div style="display: flex; justify-content: center; flex-wrap: wrap; padding: 2px;">
-            <template
-              v-for="event in eventsMap[timestamp.date]"
-              :key="event.id"
-            >
-              <q-badge
-                v-if="!event.time"
-                :class="badgeClasses(event, 'header')"
-                :style="badgeStyles(event, 'header')"
-                style="width: 100%; cursor: pointer; height: 12px; font-size: 10px; margin: 1px;"
-              >
-                <div class="title q-calendar__ellipsis">
-                  {{ event.title }}
-                  <q-tooltip>{{ event.details }}</q-tooltip>
-                </div>
-              </q-badge>
-              <q-badge
-                v-else
-                :class="badgeClasses(event, 'header')"
-                :style="badgeStyles(event, 'header')"
-                style="margin: 1px; width: 10px; max-width: 10px; height: 10px; max-height: 10px; cursor: pointer"
-                @click="scrollToEvent(event)"
-              >
-                <q-tooltip>{{ event.time + ' - ' + event.details }}</q-tooltip>
-              </q-badge>
-            </template>
-          </div>
-        </template>
-
-        <template #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }">
-          <template
-            v-for="event in getEvent(timestamp.date)"
-            :key="event._id"
-          >
-            <div
-              v-if="event.time !== undefined"
-              class="my-event"
-              :class="badgeClasses(event, 'body')"
-              :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)"
-            >
-              <div class="title q-calendar__ellipsis">
-                {{ event.title }}
-                <q-tooltip>{{ event.time + ' - ' + event.details }}</q-tooltip>
-              </div>
-            </div>
-          </template>
-        </template>
-      </q-calendar-day>
-    </div>
-  </div>
 </template>
 
 <script>
 import {
   QCalendarMonth,
-  QCalendarDay,
   PARSE_DATE, // regex for parsing out date
   addToDate,
   parseTimestamp,
@@ -166,8 +88,7 @@ export default defineComponent({
   components: {
     NavigationBar,
     QCalendarMonth,
-    AddEventsModal,
-    QCalendarDay
+    AddEventsModal
   },
 
   setup (props, { slots, emit }) {

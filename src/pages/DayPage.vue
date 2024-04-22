@@ -11,30 +11,31 @@
           @click-head-day="onClickHeadDay">
           <template #head-day-event="{ scope: { timestamp } }">
             <div style="display: flex; justify-content: center; flex-wrap: wrap; padding: 2px;">
-              <template v-for="event in eventsMap[timestamp.date]" :key="event.id">
-                <q-badge v-if="!event.time" :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')"
+              <template v-for="events in eventsMap[timestamp.date]" :key="events.id">
+                <q-badge v-if="!events.time" :class="badgeClasses(events, 'header')"
+                  :style="badgeStyles(events, 'header')"
                   style="width: 100%; cursor: pointer; height: 12px; font-size: 10px; margin: 1px;">
                   <div class="title q-calendar__ellipsis">
-                    {{ event.title }}
-                    <q-tooltip>{{ event.details }}</q-tooltip>
+                    {{ events.title }}
+                    <q-tooltip>{{ events.details }}</q-tooltip>
                   </div>
                 </q-badge>
-                <q-badge v-else :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')"
+                <q-badge v-else :class="badgeClasses(events, 'header')" :style="badgeStyles(events, 'header')"
                   style="margin: 1px; width: 10px; max-width: 10px; height: 10px; max-height: 10px; cursor: pointer"
                   @click="scrollToEvent(event)">
-                  <q-tooltip>{{ event.time + ' - ' + event.details }}</q-tooltip>
+                  <q-tooltip>{{ events.time + ' - ' + events.details }}</q-tooltip>
                 </q-badge>
               </template>
             </div>
           </template>
 
           <template #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }">
-            <template v-for="event in getEvents(timestamp.date)" :key="event.id">
-              <div v-if="event.time !== undefined" class="my-event" :class="badgeClasses(event, 'body')"
-                :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)">
+            <template v-for="events in getDayEvents(timestamp.date)" :key="events.id">
+              <div v-if="events.time !== undefined" class="my-event" :class="badgeClasses(events, 'body')"
+                :style="badgeStyles(events, 'body', timeStartPos, timeDurationHeight)">
                 <div class="title q-calendar__ellipsis">
-                  {{ event.title }}
-                  <q-tooltip>{{ event.time + ' - ' + event.details }}</q-tooltip>
+                  {{ events.title }}
+                  <q-tooltip>{{ events.time + ' - ' + events.details }}</q-tooltip>
                 </div>
               </div>
             </template>
@@ -58,8 +59,9 @@ import {
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.sass'
+import postsService from 'src/services/posts'
 
-import { defineComponent } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import NavigationBar from '../components/NavigationBar.vue'
 
 export default defineComponent({
@@ -68,60 +70,28 @@ export default defineComponent({
     NavigationBar,
     QCalendarDay
   },
-  data () {
-    return {
-      selectedDate: today(),
-      events: [
-        {
-          id: 1,
-          title: 'Meeting',
-          details: 'Time to pitch my idea to the company',
-          date: today(),
-          time: '09:00',
-          duration: 120,
-          bgcolor: 'red',
-          icon: 'fas fa-handshake'
-        },
-        {
-          id: 2,
-          title: 'Lunch',
-          details: 'Company is paying!',
-          date: today(),
-          time: '12:00',
-          duration: 60,
-          bgcolor: 'teal',
-          icon: 'fas fa-hamburger'
-        },
-        {
-          id: 3,
-          title: 'Conference',
-          details: 'Teaching Javascript 101',
-          date: today(),
-          time: '13:00',
-          duration: 180,
-          bgcolor: 'blue',
-          icon: 'fas fa-chalkboard-teacher'
-        },
-        {
-          id: 4,
-          title: 'Girlfriend',
-          details: 'Meet GF for dinner at Swanky Restaurant',
-          date: today(),
-          time: '13:00',
-          duration: 180,
-          bgcolor: 'teal-2',
-          icon: 'fas fa-utensils'
-        }
-      ]
-    }
-  },
+  setup () {
+    const { list } = postsService()
+    onMounted(() => {
+      getEvents()
+    })
 
-  computed: {
-    // convert the events into a map of lists keyed by date
-    eventsMap () {
+    const events = ref(false)
+
+    const getEvents = async () => {
+      try {
+        const data = await list()
+        events.value = data
+        console.log(data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    const eventsMap = computed(() => {
       const map = {}
-      // this.events.forEach(event => (map[ event.date ] = map[ event.date ] || []).push(event))
-      this.events.forEach(event => {
+      // events.value.forEach(event => (map[ event.date ] = map[ event.date ] || []).push(event))
+
+      events.value.forEach(event => {
         if (!map[event.date]) {
           map[event.date] = []
         }
@@ -139,34 +109,10 @@ export default defineComponent({
         }
       })
       return map
-    }
-  },
-
-  methods: {
-    badgeClasses (event, type) {
-      const isHeader = type === 'header'
-      return {
-        [`text-white bg-${event.bgcolor}`]: true,
-        'full-width': !isHeader && (!event.side || event.side === 'full'),
-        'left-side': !isHeader && event.side === 'left',
-        'right-side': !isHeader && event.side === 'right',
-        'rounded-border': true
-      }
-    },
-
-    badgeStyles (event, type, timeStartPos = undefined, timeDurationHeight = undefined) {
-      const s = {}
-      if (timeStartPos && timeDurationHeight) {
-        s.top = timeStartPos(event.time) + 'px'
-        s.height = timeDurationHeight(event.duration) + 'px'
-      }
-      s['align-items'] = 'flex-start'
-      return s
-    },
-
-    getEvents (dt) {
+    })
+    function getDayEvents (dt) {
       // get all events for the specified date
-      const events = this.eventsMap[dt] || []
+      const events = eventsMap[dt] || []
 
       if (events.length === 1) {
         events[0].side = 'full'
@@ -188,6 +134,38 @@ export default defineComponent({
       }
       console.log(events)
       return events
+    }
+    return {
+      eventsMap,
+      getDayEvents
+    }
+  },
+
+  data () {
+    return {
+      selectedDate: today()
+    }
+  },
+  methods: {
+    badgeClasses (event, type) {
+      const isHeader = type === 'header'
+      return {
+        [`text-white bg-${event.bgcolor}`]: true,
+        'full-width': !isHeader && (!event.side || event.side === 'full'),
+        'left-side': !isHeader && event.side === 'left',
+        'right-side': !isHeader && event.side === 'right',
+        'rounded-border': true
+      }
+    },
+
+    badgeStyles (event, type, timeStartPos = undefined, timeDurationHeight = undefined) {
+      const s = {}
+      if (timeStartPos && timeDurationHeight) {
+        s.top = timeStartPos(event.time) + 'px'
+        s.height = timeDurationHeight(event.duration) + 'px'
+      }
+      s['align-items'] = 'flex-start'
+      return s
     },
 
     scrollToEvent (event) {

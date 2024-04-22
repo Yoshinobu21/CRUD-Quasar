@@ -38,6 +38,35 @@
                 </q-icon>
               </template>
             </q-input>
+            <q-input class="col-3" filled v-model="form.timeStart" mask="time" :rules="[requiredRule]" label="Horário inicial">
+              <template v-slot:append>
+                <q-icon name="access_time" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-time v-model="form.timeStart" format24h>
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                      </div>
+                    </q-time>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input class="col-3" filled v-model="form.timeFinish" mask="time" :rules="[requiredRule, finishTimeRule]" label="Horário final">
+              <template v-slot:append>
+                <q-icon name="access_time" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-time v-model="form.timeFinish" format24h>
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                      </div>
+                    </q-time>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <div class="row items-center justify-start">
+              <p> Duração do evento: <br>{{ form.duration }} Minutos</p>
+            </div>
             <div class="col-12 q-gutter-sm">
               <q-btn label="Salvar" color="primary" class="float-right" icon="save"
                 :disable="!form.title || !form.details || !form.date || !form.bgcolor" type="submit"
@@ -53,7 +82,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
 import postsService from 'src/services/posts'
 import { useQuasar } from 'quasar'
 
@@ -73,7 +102,10 @@ export default defineComponent({
       title: '',
       details: '',
       date: props.eventDate,
-      bgcolor: ''
+      bgcolor: '',
+      timeStart: ref(''),
+      timeFinish: ref(''),
+      duration: ref(null)
     })
 
     onMounted(async () => {
@@ -113,12 +145,51 @@ export default defineComponent({
       form.value.date = ''
       form.value.bgcolor = ''
     }
+    function calculateDuration () {
+      if (form.value.timeStart && form.value.timeFinish) {
+        const [startHour, startMinute] = form.value.timeStart.split(':').map(Number)
+        const [finishHour, finishMinute] = form.value.timeFinish.split(':').map(Number)
 
+        const startTotalMinutes = startHour * 60 + startMinute
+        const finishTotalMinutes = finishHour * 60 + finishMinute
+
+        form.value.duration = Math.abs(finishTotalMinutes - startTotalMinutes)
+      }
+    }
+    watch(() => form.value.timeStart, async (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        calculateDuration()
+      }
+    })
+    watch(() => form.value.timeFinish, async (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        calculateDuration()
+      }
+    })
     return {
       form,
       onSubmit,
       getPost,
       isDisable
+    }
+  },
+  methods: {
+    requiredRule (val) {
+      if (!val) {
+        return 'Favor, preencher o campo obrigatório'
+      }
+      return true
+    },
+    finishTimeRule () {
+      if (this.form.timeStart && this.form.timeFinish) {
+        const startTime = new Date(`2000-01-01T${this.form.timeStart}`)
+        const endTime = new Date(`2000-01-01T${this.form.timeFinish}`)
+
+        if (startTime >= endTime) {
+          return 'Favor, preencher um horário final maior que o inicial'
+        }
+        return true
+      }
     }
   }
 })
