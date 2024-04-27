@@ -46,9 +46,9 @@ const linksList = [
     route: { name: 'home' }
   },
   {
-    title: 'Day',
+    title: 'Evento diário',
     caption: '',
-    icon: 'home',
+    icon: 'today',
     route: { name: 'day' }
   }
 ]

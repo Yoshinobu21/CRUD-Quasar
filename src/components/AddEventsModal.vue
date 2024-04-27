@@ -38,7 +38,7 @@
                 </q-icon>
               </template>
             </q-input>
-            <q-input class="col-3" filled v-model="form.timeStart" mask="time" :rules="[requiredRule]" label="Horário inicial">
+            <q-input class="col-4" filled v-model="form.timeStart" mask="time" :rules="[requiredRule]" label="Horário inicial">
               <template v-slot:append>
                 <q-icon name="access_time" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -51,7 +51,7 @@
                 </q-icon>
               </template>
             </q-input>
-            <q-input class="col-3" filled v-model="form.timeFinish" mask="time" :rules="[requiredRule, finishTimeRule]" label="Horário final">
+            <q-input class="col-4" filled v-model="form.timeFinish" mask="time" :rules="[requiredRule, finishTimeRule]" label="Horário final">
               <template v-slot:append>
                 <q-icon name="access_time" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -90,7 +90,9 @@ export default defineComponent({
   name: 'AddEventsModal',
   props: {
     eventId: String,
-    eventDate: String
+    eventDate: String,
+    eventTimeStart: String,
+    eventTimeFinish: String
   },
 
   setup (props) {
@@ -103,12 +105,13 @@ export default defineComponent({
       details: '',
       date: props.eventDate,
       bgcolor: '',
-      timeStart: ref(''),
-      timeFinish: ref(''),
+      timeStart: props.eventTimeStart,
+      timeFinish: props.eventTimeFinish,
       duration: ref(null)
     })
 
     onMounted(async () => {
+      calculateDuration()
       if (props.eventId) {
         getPost(props.eventId)
       }
@@ -144,6 +147,9 @@ export default defineComponent({
       form.value.details = ''
       form.value.date = ''
       form.value.bgcolor = ''
+      form.value.timeStart = ''
+      form.value.timeFinish = ''
+      form.value.details = ''
     }
     function calculateDuration () {
       if (form.value.timeStart && form.value.timeFinish) {

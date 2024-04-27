@@ -95,6 +95,7 @@ export default defineComponent({
     const { list, remove } = postsService()
     onMounted(() => {
       getEvents()
+      console.log(calendar.value)
     })
 
     const $q = useQuasar()
@@ -155,7 +156,6 @@ export default defineComponent({
       try {
         const data = await list()
         events.value = data
-        console.log(data)
       } catch (error) {
         console.error(error)
       }
@@ -163,7 +163,6 @@ export default defineComponent({
     function showEvent (event) {
       displayEvent.value = true
       showingEvent.value = event
-      console.log(showingEvent)
     }
 
     const handleDeletePost = async (events) => {
@@ -277,11 +276,8 @@ export default defineComponent({
       return s
     }
 
-    function scrollToEvent (event) {
-      this.$refs.calendar.scrollToTime(event.time, 350)
-    }
-
     function onToday () {
+      console.log(calendar.value)
       calendar.value.moveToToday()
     }
     function onPrev () {
@@ -370,7 +366,6 @@ export default defineComponent({
       onClickWorkweek,
       onClickHeadDay,
       onClickHeadWorkweek,
-      scrollToEvent,
       onClickTime,
       onClickInterval,
       onClickHeadIntervals
