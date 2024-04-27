@@ -15,18 +15,25 @@
         <q-card-section class="inset-shadow">
           {{ showingEvent.details }}
         </q-card-section>
+        <q-card-section class="inset-shadow">
+          Horário inicial: {{ showingEvent.timeStart }} <br>
+          Horário Final: {{ showingEvent.timeFinish }}
+        </q-card-section>
+        <q-card-section class="inset-shadow">
+          Duração: {{ showingEvent.duration }} Minutos
+        </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="OK" color="primary" v-close-popup></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
-
+   <!-- Barra de navegação e mês atual-->
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
-
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
       <div style="font-size: 2em;">{{ formattedMonth }}</div>
     </div>
 
+   <!-- Calendário mensal -->
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%;">
         <q-calendar-month ref="calendar" v-model="selectedDate" use-navigation focusable hoverable animated bordered
@@ -38,8 +45,8 @@
               <div :class="badgeClasses(events, 'day')" :style="badgeStyles(events, 'day')" class="my-event"
                 @click.stop.prevent="showEvent(events)">
                 <div class="title q-calendar__ellipsis">
-                  {{ events.title }}
-                  <q-tooltip>{{ events.details }}</q-tooltip>
+                  {{ events.title + (events.timeStart ? ' - ' + events.timeStart : '') }}
+                  <q-tooltip>{{ events.details }} - Duração: {{ events.duration }} Minutos</q-tooltip>
                 </div>
               </div>
             </template>
@@ -88,6 +95,7 @@ export default defineComponent({
     const { list, remove } = postsService()
     onMounted(() => {
       getEvents()
+      console.log(calendar.value)
     })
 
     const $q = useQuasar()
@@ -148,7 +156,6 @@ export default defineComponent({
       try {
         const data = await list()
         events.value = data
-        console.log(data)
       } catch (error) {
         console.error(error)
       }
@@ -156,7 +163,6 @@ export default defineComponent({
     function showEvent (event) {
       displayEvent.value = true
       showingEvent.value = event
-      console.log(showingEvent)
     }
 
     const handleDeletePost = async (events) => {
@@ -249,13 +255,14 @@ export default defineComponent({
       }
     }
 
-    function badgeStyles (event, day) {
+    function badgeStyles (event, day, timeStartPos = undefined, timeDurationHeight = undefined) {
       const s = {}
       s['background-color'] = event.bgcolor
-      // s.left = day.weekday === 0 ? 0 : (day.weekday * parsedCellWidth) + '%'
-      // s.top = 0
-      // s.bottom = 0
-      // s.width = (event.days * parsedCellWidth) + '%'
+      if (timeStartPos && timeDurationHeight) {
+        s.top = timeStartPos(event.time) + 'px'
+        s.height = timeDurationHeight(event.duration) + 'px'
+      }
+      s['align-items'] = 'flex-start'
       return s
     }
     function displayClasses (event) {
@@ -270,6 +277,7 @@ export default defineComponent({
     }
 
     function onToday () {
+      console.log(calendar.value)
       calendar.value.moveToToday()
     }
     function onPrev () {
@@ -310,6 +318,15 @@ export default defineComponent({
     function onClickHeadWorkweek (data) {
       console.log('onClickHeadWorkweek', data)
     }
+    function onClickTime (data) {
+      console.log('onClickTime', data)
+    }
+    function onClickInterval (data) {
+      console.log('onClickInterval', data)
+    }
+    function onClickHeadIntervals (data) {
+      console.log('onClickHeadIntervals', data)
+    }
     watch(addEvent, async (newValue, oldValue) => {
       if (newValue !== oldValue) {
         getEvents()
@@ -318,6 +335,7 @@ export default defineComponent({
         getEvents()
       }
     })
+
     return {
       selectedDate,
       calendar,
@@ -347,7 +365,10 @@ export default defineComponent({
       onClickDay,
       onClickWorkweek,
       onClickHeadDay,
-      onClickHeadWorkweek
+      onClickHeadWorkweek,
+      onClickTime,
+      onClickInterval,
+      onClickHeadIntervals
     }
   }
 })
