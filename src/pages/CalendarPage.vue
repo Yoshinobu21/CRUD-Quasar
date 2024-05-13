@@ -8,6 +8,7 @@
           <q-toolbar-title>
             {{ showingEvent.title }}
           </q-toolbar-title>
+          <q-btn flat round color="white" icon="upload" v-close-popup @click="postGoogleEvent(showingEvent)"></q-btn>
           <q-btn flat round color="white" icon="delete" v-close-popup @click="handleDeletePost(showingEvent)"></q-btn>
           <q-btn flat round color="white" icon="edit" v-close-popup @click="handleEditPost(showingEvent)"></q-btn>
           <q-btn flat round color="white" icon="close" v-close-popup></q-btn>
@@ -31,6 +32,15 @@
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap;">
       <div style="font-size: 2em;">{{ formattedMonth }}</div>
+      <q-btn v-if="LoggedIn == false" no-caps class="button" color="primary" style="margin : 4px;" @click="auth">
+       Autenticar no Google
+      </q-btn>
+      <q-btn  v-if="LoggedIn == true" no-caps color="primary" style="margin : 4px;">
+       Autenticado!
+      </q-btn>
+      <q-btn  no-caps color="primary" style="margin : 4px;" @click="listGoogleEvents()">
+      Trazer eventos Google a partir de hoje
+      </q-btn>
     </div>
 
    <!-- Calendário mensal -->
@@ -92,14 +102,15 @@ export default defineComponent({
   },
 
   setup (props, { slots, emit }) {
-    const { list, remove } = postsService()
+    const { list, remove, isLoggedIn, authGoogle, postGoogle, getEventsGoogle } = postsService()
     onMounted(() => {
       getEvents()
-      console.log(calendar.value)
+      getIsLoggedIn()
     })
 
     const $q = useQuasar()
     const events = ref(false)
+    const eventsGoogle = ref(false)
     const showingEvent = ref(null)
     const displayEvent = ref(false)
     const addEvent = ref(false)
@@ -109,14 +120,48 @@ export default defineComponent({
       selectedMonth = reactive([]),
       year = ref(new Date().getFullYear()),
       calendar = ref(null),
-      country = 'pt-BR'
+      country = 'BR'
 
     const locale = 'pt-BR'
+    const LoggedIn = ref(false)
 
     const formattedMonth = computed(() => {
       const date = new Date(selectedDate.value)
       return monthFormatter().format(date) + ' ' + date.getFullYear()
     })
+
+    const getIsLoggedIn = async () => {
+      try {
+        const data = await isLoggedIn()
+        LoggedIn.value = data.isLoggedIn
+        console.log(LoggedIn.value)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    const auth = async () => {
+      try {
+        await authGoogle()
+        getIsLoggedIn()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    const listGoogleEvents = async () => {
+      try {
+        const data = await getEventsGoogle()
+        eventsGoogle.value = data
+        console.log(eventsGoogle.value)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    async function postGoogleEvent (event) {
+      await postGoogle(event)
+    }
 
     function monthFormatter () {
       try {
@@ -154,12 +199,14 @@ export default defineComponent({
 
     const getEvents = async () => {
       try {
+        getIsLoggedIn()
         const data = await list()
         events.value = data
       } catch (error) {
         console.error(error)
       }
     }
+
     function showEvent (event) {
       displayEvent.value = true
       showingEvent.value = event
@@ -242,6 +289,22 @@ export default defineComponent({
                 // already accounted for 1st day
               } while (--days > 1)
             }
+          })
+        }
+        if (eventsGoogle.value !== undefined && eventsGoogle.value.length > 0) {
+          eventsGoogle.value.forEach(event => {
+            const eventDate = new Date(event.start.dateTime)
+            console.log(event.start.dateTime)
+            const formattedDate = eventDate.toISOString().split('T')[0]
+            event.title = event.summary
+            event.details = event.description
+            event.bgcolor = 'blue-4'
+            event.date = formattedDate
+            console.log(event)
+            if (!map[formattedDate]) {
+              map[formattedDate] = []
+            }
+            (map[formattedDate] = (map[formattedDate] || [])).push(event)
           })
         }
       }
@@ -344,11 +407,15 @@ export default defineComponent({
       eventsMap,
       eventDate,
       eventId,
+      auth,
+      postGoogleEvent,
+      LoggedIn,
       formattedMonth,
       addEvent,
       showingEvent,
       displayEvent,
       getEvents,
+      listGoogleEvents,
       handleEditPost,
       handleDeletePost,
       badgeClasses,

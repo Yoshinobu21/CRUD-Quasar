@@ -79,7 +79,7 @@ function leftClick (e) {
 }
 
 export default defineComponent({
-  name: 'WeekSlotDayBody',
+  name: 'DayPage',
   components: {
     NavigationBar,
     QCalendarDay,
@@ -93,13 +93,13 @@ export default defineComponent({
     const eventId = ref(null)
     const eventTimeStart = ref(null)
     const eventTimeFinish = ref(null)
-    const selectedDate = ref(today()),
-      calendar = ref(null),
-      toggled = ref(false),
-      anchorTimestamp = ref(null),
-      otherTimestamp = ref(null),
-      mouseDown = ref(false),
-      currentDate = ref(null)
+    const selectedDate = ref(today())
+    const calendar = ref(null)
+    const toggled = ref(false)
+    const anchorTimestamp = ref(null)
+    const otherTimestamp = ref(null)
+    const mouseDown = ref(false)
+    const currentDate = ref(null)
 
     const events = ref(false)
 

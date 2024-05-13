@@ -10,6 +10,15 @@ export default function useApi (url) {
     }
   }
 
+  const getEventsGoogle = async () => {
+    try {
+      const response = await api.get(`${url}/events-google`)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   const getById = async (id) => {
     try {
       const response = await api.get(`${url}/${id}`)
@@ -22,6 +31,33 @@ export default function useApi (url) {
   const post = async (form) => {
     try {
       const response = await api.post(`${url}/add-event`, form)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const authGoogle = async () => {
+    try {
+      const response = await api.get(`${url}/google-auth`)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const isLoggedIn = async () => {
+    try {
+      const response = await api.get(`${url}/is-logged-in`)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const postGoogle = async (form) => {
+    try {
+      const response = await api.post(`${url}/add-event-google`, form)
       return response.data
     } catch (error) {
       throw new Error(error)
@@ -51,6 +87,10 @@ export default function useApi (url) {
     post,
     update,
     remove,
-    getById
+    getById,
+    postGoogle,
+    authGoogle,
+    isLoggedIn,
+    getEventsGoogle
   }
 }

@@ -149,7 +149,6 @@ export default defineComponent({
       form.value.bgcolor = ''
       form.value.timeStart = ''
       form.value.timeFinish = ''
-      form.value.details = ''
     }
     function calculateDuration () {
       if (form.value.timeStart && form.value.timeFinish) {
